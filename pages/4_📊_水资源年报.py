@@ -68,11 +68,11 @@ st.caption("数据来源：2019-2024 年浙江省水资源年报")
 with st.sidebar:
     st.header("📋 查询条件")
     
-    # 获取可用选项
+    # 获取可用选项（sample 模式下包含非正式市名如"合计市"）
     available_years = get_available_years()
-    available_cities = get_available_cities()
+    available_cities = get_available_cities(only_valid=False)
     available_tables = get_available_tables()
-    
+
     # 选择表
     selected_table = st.selectbox(
         "📊 选择数据表",
@@ -80,14 +80,15 @@ with st.sidebar:
         index=available_tables.index("用水量") if "用水量" in available_tables else 0,
         help="选择要查询的数据表类型"
     )
-    
+
     st.divider()
-    
-    # 选择市
+
+    # 选择市（default 动态取第一个可用项）
+    default_cities = available_cities[:1] if available_cities else []
     selected_cities = st.multiselect(
         "🏙️ 选择市",
         available_cities,
-        default=["湖州市"],
+        default=default_cities,
         help="可多选，留空表示全部"
     )
     

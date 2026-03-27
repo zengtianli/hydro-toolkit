@@ -5,6 +5,7 @@
 
 启动方式：streamlit run app.py
 """
+import io
 import streamlit as st
 import pandas as pd
 import sys

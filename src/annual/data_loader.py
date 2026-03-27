@@ -20,7 +20,9 @@ from typing import List, Optional
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-INPUT_DIR = PROJECT_ROOT / "data" / "annual" / "input"
+_input_dir = PROJECT_ROOT / "data" / "annual" / "input"
+_sample_dir = PROJECT_ROOT / "data" / "annual" / "sample"
+INPUT_DIR = _input_dir if _input_dir.exists() and any(_input_dir.glob("*.csv")) else _sample_dir
 
 
 # 正式的 11 个市（过滤掉"其中杭州市"、"杭嘉湖区市"等）

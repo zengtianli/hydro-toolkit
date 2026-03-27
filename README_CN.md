@@ -1,50 +1,44 @@
-# Hydro Toolkit
+# 🌊 水利计算工具集 Hydro Toolkit
 
 [English](README.md) | **中文**
 
-水利计算工具集 — 水库调度、纳污能力、灌溉需水、水效评估等一站式计算平台。
+[![GitHub stars](https://img.shields.io/github/stars/zengtianli/hydro-toolkit)](https://github.com/zengtianli/hydro-toolkit)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.36+-FF4B4B.svg)](https://streamlit.io)
 
-[![在线演示](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E6%BC%94%E7%A4%BA-hydro.tianlizeng.cloud-brightgreen)](https://hydro.tianlizeng.cloud)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.28%2B-FF4B4B.svg)](https://streamlit.io)
+插件式水利计算工具集。粘贴 GitHub URL 即可安装工具，无需修改代码。
 
----
+![screenshot](docs/screenshots/home.png)
 
-### 立即体验 — 无需安装
+## 架构
 
-**https://hydro.tianlizeng.cloud**
+```
+hydro-toolkit (Host)          插件 (git clone)
+┌─────────────────┐     ┌──────────────────────┐
+│  app.py         │     │  hydro-capacity/     │
+│  core/          │────▶│  hydro-reservoir/    │
+│  plugins/       │     │  hydro-efficiency/   │
+│    hydro-xxx/   │     │  hydro-annual/       │
+│    hydro-yyy/   │     │  hydro-irrigation/   │
+└─────────────────┘     │  hydro-district/     │
+                        └──────────────────────┘
+```
 
-上传数据 → 选择工具 → 下载结果。所有工具内置示例数据，零门槛试用。
+Toolkit 是一个**纯 Host 壳**，零业务代码。每个工具是独立插件，通过 `plugin.yaml` 在运行时被发现。
 
----
+## 已有插件
 
-## 功能一览
+| # | 插件 | 说明 | 仓库 |
+|---|------|------|------|
+| 🌊 | 纳污能力计算 | 河道/水库纳污能力计算 | [hydro-capacity](https://github.com/zengtianli/hydro-capacity) |
+| ⚡ | 水库群调度 | 梯级水电调度优化 | [hydro-reservoir](https://github.com/zengtianli/hydro-reservoir) |
+| 💧 | 水效评估 | AHP+CRITIC+TOPSIS 综合评价 | [hydro-efficiency](https://github.com/zengtianli/hydro-efficiency) |
+| 📊 | 水资源年报 | 浙江省数据查询（2019–2024） | [hydro-annual](https://github.com/zengtianli/hydro-annual) |
+| 🌾 | 灌溉需水 | 水稻+旱地水量平衡模型 | [hydro-irrigation](https://github.com/zengtianli/hydro-irrigation) |
+| 🗺️ | 河区调度 | 19河区逐日供需平衡 | [hydro-district](https://github.com/zengtianli/hydro-district) |
 
-| 工具 | 功能 | 输入 | 输出 |
-|------|------|------|------|
-| **纳污能力计算** | 河道/水库纳污能力计算，支持支流分段和多方案 | Excel (流量 + 功能区参数) | Excel (逐月纳污能力) |
-| **水库群调度** | 梯级水库发电调度优化计算 | Excel (来水 + 水库参数) | Excel (逐日调度过程) |
-| **水效评估** | 工业集聚区水效评估 (AHP+CRITIC+TOPSIS) | Excel (三循环指标数据) | Excel (评分 + 企业排名) |
-| **水资源年报** | 浙江省水资源年报数据查询 (2019-2024) | 内置 CSV 数据集 | Excel/CSV 导出 |
-| **灌溉需水** | 水稻+旱地灌溉需水量水平衡模拟 | TXT (降雨 + 蒸发) | Excel (逐日需水量) |
-| **河区调度** | 19河区逐日水资源供需平衡调度 | TXT (来水 + 需水) | TXT/ZIP (调度结果) |
-
-## 截图
-
-### 首页
-![首页](docs/screenshots/homepage.png)
-
-### 工具界面
-| | |
-|---|---|
-| ![纳污能力计算](docs/screenshots/capacity.png) | ![水库群调度](docs/screenshots/reservoir.png) |
-| ![水效评估](docs/screenshots/efficiency.png) | ![水资源年报](docs/screenshots/annual.png) |
-| ![灌溉需水](docs/screenshots/irrigation.png) | ![河区调度](docs/screenshots/district.png) |
-
-## 本地部署
-
-### 快速启动
+## 快速开始
 
 ```bash
 git clone https://github.com/zengtianli/hydro-toolkit.git
@@ -53,60 +47,55 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-### Docker (即将支持)
+然后在侧边栏点击 **插件管理**，粘贴插件仓库 URL 即可安装。
+
+## 安装插件
+
+1. 在浏览器中打开 Toolkit
+2. 点击侧边栏的 **插件管理**（⚙️）
+3. 粘贴 GitHub URL（如 `https://github.com/zengtianli/hydro-capacity`）
+4. 点击 **安装** — 插件立即出现在侧边栏
+
+## 开发自己的插件
+
+创建以下结构的仓库：
+
+```
+hydro-my-tool/
+├── plugin.yaml          # 必须 — 元数据
+├── app.py               # 必须 — Streamlit 入口
+├── src/my_tool/         # 计算逻辑
+├── src/common/st_utils.py  # 共享 UI 工具
+├── requirements.txt
+└── README.md
+```
+
+**plugin.yaml**:
+```yaml
+name: my_tool
+title: 我的工具
+icon: "🔧"
+order: 70
+description: 一句话描述
+version: 1.0.0
+```
+
+> **重要**: 不要包含 `src/__init__.py` — namespace package 要求必须缺失。
+
+详见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+
+## 部署（VPS）
 
 ```bash
-docker run -p 8504:8504 zengtianli/hydro-toolkit
+git clone https://github.com/zengtianli/hydro-toolkit.git
+cd hydro-toolkit
+pip install -r requirements.txt
+# 安装插件
+cd plugins && git clone https://github.com/zengtianli/hydro-capacity.git && cd ..
+# 启动
+nohup streamlit run app.py --server.port 8510 --server.headless true &
 ```
-
-## 项目结构
-
-```
-hydro-toolkit/
-├── app.py              # 首页 — 工具总览
-├── pages/              # Streamlit 多页面应用
-│   ├── 1_纳污能力计算.py
-│   ├── 2_水库群调度.py
-│   ├── 3_水效评估.py
-│   ├── 4_水资源年报.py
-│   ├── 5_灌溉需水.py
-│   └── 6_河区调度.py
-├── src/                # 计算引擎
-│   ├── capacity/       # 纳污能力核心
-│   ├── reservoir/      # 水库调度核心
-│   ├── efficiency/     # AHP + CRITIC + TOPSIS
-│   ├── annual/         # 年报数据加载器
-│   ├── irrigation/     # 灌溉水平衡
-│   ├── district/       # 19河区调度器
-│   └── common/         # 共享 Streamlit 工具
-├── data/               # 示例数据（内置演示）
-├── templates/          # Excel 模板
-├── requirements.txt
-└── LICENSE             # MIT
-```
-
-## 技术栈
-
-- **Python 3.9+** — 计算引擎
-- **Streamlit** — Web 界面（多页面应用）
-- **pandas / numpy / scipy** — 数据处理与数值计算
-- **plotly** — 交互式图表
-- **openpyxl** — Excel 读写
-
-## 核心算法
-
-| 工具 | 方法 |
-|------|------|
-| 纳污能力计算 | 一维稳态水质模型 + 支流混合: `W = 31.536 × b × (Cs - C0×e^(-KL/u)) × (QKL/u) / (1 - e^(-KL/u))` |
-| 水库群调度 | 梯级水库联合调度 + 水位-库容插值 (scipy) |
-| 水效评估 | AHP 主观赋权 + CRITIC 客观赋权，通过 α 滑块组合，TOPSIS 排名 |
-| 灌溉需水 | 基于 Penman-Monteith ET₀ 的水稻/旱地水平衡逐日模拟 |
-| 河区调度 | 19 河区逐日水平衡 + 动态平衡河区 + 分水枢纽递归分配 |
-
-## 贡献
-
-欢迎提 Issue 和 PR。请先开 Issue 讨论变更内容。
 
 ## 许可证
 
-[MIT](LICENSE)
+MIT

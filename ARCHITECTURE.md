@@ -2,142 +2,160 @@
 
 ## Overview
 
-Hydro Toolkit 采用 **插件式架构**：每个水利计算工具既是独立项目，也是 Toolkit 的一个插件（页面）。
+Hydro Toolkit is a **pure host shell** with zero business logic. Every calculation tool is an independent plugin — a standalone Streamlit app with a `plugin.yaml` manifest.
 
 ```
-hydro-toolkit (Portal)
-├── pages/1_纳污能力计算.py  ←  hydro-capacity/app.py
-├── pages/2_水库群调度.py    ←  hydro-reservoir/app.py
-├── pages/3_水效评估.py      ←  hydro-efficiency/app.py
-├── pages/4_水资源年报.py    ←  hydro-annual/app.py
-├── pages/5_灌溉需水.py      ←  hydro-irrigation/app.py
-├── pages/6_河区调度.py      ←  hydro-district/app.py
-└── (future plugins...)
+hydro-toolkit/                 ← Host (this repo)
+├── app.py                     ← st.navigation() dynamic page loading
+├── core/
+│   ├── plugin_loader.py       ← Scan plugins/, read plugin.yaml
+│   ├── plugin_manager.py      ← git clone / pull / rm
+│   ├── home.py                ← Auto-generated tool overview
+│   └── manage.py              ← Plugin install/update/uninstall UI
+├── plugins/                   ← Installed plugins (gitignored)
+│   ├── hydro-capacity/        ← git cloned
+│   ├── hydro-reservoir/
+│   └── ...
+├── plugins.json               ← Registry (source URLs for updates)
+└── requirements.txt           ← Host-only: streamlit + pyyaml
 ```
-
-## Plugin Registry
-
-| # | Plugin Repo | Toolkit Page | 类型 | 状态 |
-|---|---|---|---|---|
-| 1 | [hydro-capacity](https://github.com/zengtianli/hydro-capacity) | `pages/1_🌊_纳污能力计算.py` | Streamlit | integrated |
-| 2 | [hydro-reservoir](https://github.com/zengtianli/hydro-reservoir) | `pages/2_⚡_水库群调度.py` | Streamlit | integrated |
-| 3 | [hydro-efficiency](https://github.com/zengtianli/hydro-efficiency) | `pages/3_💧_水效评估.py` | Streamlit | integrated |
-| 4 | [hydro-annual](https://github.com/zengtianli/hydro-annual) | `pages/4_📊_水资源年报.py` | Streamlit | integrated |
-| 5 | [hydro-irrigation](https://github.com/zengtianli/hydro-irrigation) | `pages/5_🌾_灌溉需水.py` | Streamlit | integrated |
-| 6 | [hydro-district](https://github.com/zengtianli/hydro-district) | `pages/6_🗺️_河区调度.py` | Streamlit | integrated |
-| - | [hydro-geocode](https://github.com/zengtianli/hydro-geocode) | — | Streamlit | standalone |
-| - | [hydro-qgis](https://github.com/zengtianli/hydro-qgis) | — | CLI/QGIS | standalone |
-| - | [hydro-risk](https://github.com/zengtianli/hydro-risk) | — | CLI | standalone |
-| - | [hydro-rainfall](https://github.com/zengtianli/hydro-rainfall) | — | CLI | standalone |
-| - | hydro-leak (planned) | — | Streamlit | development |
 
 ## How It Works
 
-### Two Modes, Same Code
+### Plugin Discovery
 
-每个插件有两种运行方式：
+On every page load, `core/plugin_loader.py` scans the `plugins/` directory:
 
-**独立模式** — `hydro-xxx/app.py`
+1. Iterate subdirectories of `plugins/`
+2. Look for `plugin.yaml` in each
+3. Parse metadata (name, title, icon, order, etc.)
+4. Return sorted list of `PluginInfo` objects
+
+### Page Loading
+
+`app.py` uses Streamlit's `st.navigation()` API to build the sidebar dynamically:
+
+```python
+pages = [st.Page("core/home.py", title="首页", icon="🏠", default=True)]
+for p in plugins:
+    pages.append(st.Page(str(p.path / "app.py"), title=p.title, icon=p.icon, url_path=p.name))
+pages.append(st.Page("core/manage.py", title="插件管理", icon="⚙️"))
+nav = st.navigation(pages)
+nav.run()
 ```
-hydro-capacity/
-├── app.py                  # 独立入口
-├── src/capacity/           # 计算引擎
-├── src/common/st_utils.py  # UI 工具（自包含副本）
-└── data/sample/            # 示例数据
+
+### Namespace Package Resolution
+
+All plugins use `from src.{module} import ...` for their internal imports. To avoid collisions when multiple plugins are loaded:
+
+- **Each plugin's directory is added to `sys.path`**
+- **`src/__init__.py` must NOT exist** in any plugin — this makes `src` a PEP 420 namespace package
+- Python merges all `src/` directories from `sys.path` into a single namespace
+- Each subpackage (`src/capacity/`, `src/reservoir/`, etc.) has a unique name, so there's no collision
+- `src/common/st_utils.py` is identical across all plugins — any copy works
+
+### Plugin Installation
+
+When a user pastes a GitHub URL in the Plugin Manager:
+
+1. `git clone --depth 1` into `plugins/`
+2. Verify `plugin.yaml` exists
+3. Delete `src/__init__.py` if present (namespace package requirement)
+4. `pip install -r requirements.txt`
+5. Update `plugins.json` registry
+6. `st.rerun()` — new plugin appears immediately
+
+## Plugin Specification
+
+### plugin.yaml (Required)
+
+```yaml
+name: capacity              # Unique identifier (used as URL path)
+title: 纳污能力计算           # Display name in sidebar
+icon: "🌊"                  # Emoji icon
+order: 10                   # Sort order (lower = higher)
+description: 河道/水库纳污能力计算  # One-line description
+version: 1.0.0              # Semantic version
 ```
 
-**Toolkit 模式** — `hydro-toolkit/pages/N_*.py`
+### Directory Structure
+
 ```
-hydro-toolkit/
-├── pages/1_🌊_纳污能力计算.py  # Toolkit 入口（= app.py 的多页版）
-├── src/capacity/               # 计算引擎（= 独立版 identical）
-├── src/common/st_utils.py      # UI 工具（共享）
-└── data/capacity/sample/       # 示例数据
-```
-
-### Difference Between Modes
-
-独立版 `app.py` 和 Toolkit 版 `pages/N_*.py` 仅有 3 处差异：
-
-| 差异 | 独立版 | Toolkit 版 |
-|------|--------|------------|
-| 路径基准 | `Path(__file__).parent` | `Path(__file__).parent.parent` |
-| data 路径 | `data/sample/` | `data/{module}/sample/` |
-| footer URL | `repo_url="hydro-xxx"` | 默认 hydro-toolkit |
-
-**`src/{module}/` 计算引擎代码完全一致，零差异。**
-
-## Adding a New Plugin
-
-### Step 1: 独立开发
-
-```bash
-# 创建新项目
-mkdir ~/Dev/hydro-xxx && cd ~/Dev/hydro-xxx
-
-# 标准结构
 hydro-xxx/
-├── app.py
-├── src/xxx/          # 计算引擎
-├── src/common/
-│   ├── __init__.py
-│   └── st_utils.py   # 从任意 hydro-* 复制
-├── data/sample/
+├── plugin.yaml              # Required
+├── app.py                   # Required — Streamlit entry point
+├── src/
+│   ├── {module}/            # Business logic (unique name per plugin)
+│   │   ├── __init__.py
+│   │   └── *.py
+│   └── common/
+│       ├── __init__.py
+│       └── st_utils.py      # page_config + excel_download + footer
+├── data/sample/             # Example data (optional)
+├── .streamlit/config.toml   # Streamlit config (for standalone deploy)
 ├── requirements.txt
-├── README.md
-└── .gitignore
+└── README.md
 ```
 
-### Step 2: 集成到 Toolkit
+### app.py Requirements
 
-1. 将 `src/xxx/` 复制到 `hydro-toolkit/src/xxx/`
-2. 将 `data/sample/` 复制到 `hydro-toolkit/data/xxx/sample/`
-3. 将 `app.py` 复制为 `hydro-toolkit/pages/N_icon_名称.py`，调整 3 处路径差异
-4. 在 `hydro-toolkit/app.py` 的 `tools` 列表添加卡片
-5. 更新 `requirements.txt`
+1. **Self-path resolution** — must add its own directory to `sys.path`:
+   ```python
+   import sys
+   from pathlib import Path
+   sys.path.insert(0, str(Path(__file__).resolve().parent))
+   ```
 
-### Step 3: Sync Protocol
+2. **Tolerant page_config** — `st_utils.page_config()` uses try/except to silently skip when running inside the Toolkit host (which sets page config first).
 
-修改计算引擎时，在**独立 repo** 开发测试，然后同步到 Toolkit：
+3. **Footer** — call `footer()` at the end with the plugin's repo URL.
 
-```bash
-# 从独立 repo 同步到 toolkit
-cp -r ~/Dev/hydro-xxx/src/xxx/* ~/Dev/hydro-toolkit/src/xxx/
-```
+### Critical Rule
 
-反向亦可。核心原则：**`src/{module}/` 必须保持一致**。
+> **`src/__init__.py` must NOT exist.** If present, Python treats `src` as a regular package rooted in one plugin directory, breaking imports for all other plugins. The install manager automatically removes it, but plugin developers should never include it.
 
-## Local Directory Map
+## Two Running Modes
 
-```
-~/Dev/
-├── hydro-toolkit/      → github.com/zengtianli/hydro-toolkit   (Portal)
-├── hydro-capacity/     → github.com/zengtianli/hydro-capacity
-├── hydro-reservoir/    → github.com/zengtianli/hydro-reservoir
-├── hydro-efficiency/   → github.com/zengtianli/hydro-efficiency
-├── hydro-annual/       → github.com/zengtianli/hydro-annual
-├── hydro-irrigation/   → github.com/zengtianli/hydro-irrigation
-├── hydro-district/     → github.com/zengtianli/hydro-district
-├── hydro-geocode/      → github.com/zengtianli/hydro-geocode
-├── hydro-qgis/         → github.com/zengtianli/hydro-qgis
-├── hydro-risk/         → github.com/zengtianli/hydro-risk
-├── hydro-rainfall/     → github.com/zengtianli/hydro-rainfall
-└── scripts/            → github.com/zengtianli/scripts
-```
+Each plugin works in both modes with zero code changes:
 
-## Shared Infrastructure
+| | Standalone | Toolkit Plugin |
+|---|---|---|
+| Command | `streamlit run app.py` | Loaded by Toolkit host |
+| page_config | Called by plugin | Skipped (host handles it) |
+| sys.path | Self-resolved | Host adds all plugin dirs |
+| URL | `localhost:8501` | `localhost:8510/capacity` |
 
-### st_utils.py (65 lines)
+## Plugin Registry
 
-每个 Streamlit 插件自带一份 `src/common/st_utils.py`，提供：
-- `page_config(title, icon)` — 统一页面配置
-- `excel_download(sheets, filename)` — 多 sheet Excel 导出
-- `footer(tool_name, repo_url)` — 统一页脚
+### Integrated (Streamlit plugins)
 
-自包含，无外部依赖。修改时需同步到所有 repo。
+| Plugin | Repo | Order |
+|--------|------|-------|
+| 🌊 capacity | [hydro-capacity](https://github.com/zengtianli/hydro-capacity) | 10 |
+| ⚡ reservoir | [hydro-reservoir](https://github.com/zengtianli/hydro-reservoir) | 20 |
+| 💧 efficiency | [hydro-efficiency](https://github.com/zengtianli/hydro-efficiency) | 30 |
+| 📊 annual | [hydro-annual](https://github.com/zengtianli/hydro-annual) | 40 |
+| 🌾 irrigation | [hydro-irrigation](https://github.com/zengtianli/hydro-irrigation) | 50 |
+| 🗺️ district | [hydro-district](https://github.com/zengtianli/hydro-district) | 60 |
 
-### Data Convention
+### Standalone (CLI / non-Streamlit)
 
-- 独立版：`data/sample/`（扁平）
-- Toolkit 版：`data/{module}/sample/`（按模块分）
-- 不入 git 的工作数据：`data/input/`、`data/output/`
+| Project | Repo | Type |
+|---------|------|------|
+| hydro-geocode | [hydro-geocode](https://github.com/zengtianli/hydro-geocode) | Streamlit (not yet standardized) |
+| hydro-qgis | [hydro-qgis](https://github.com/zengtianli/hydro-qgis) | CLI / QGIS |
+| hydro-risk | [hydro-risk](https://github.com/zengtianli/hydro-risk) | CLI |
+| hydro-rainfall | [hydro-rainfall](https://github.com/zengtianli/hydro-rainfall) | CLI |
+
+## Developing a New Plugin
+
+1. `mkdir ~/Dev/hydro-xxx && cd ~/Dev/hydro-xxx`
+2. Create `plugin.yaml` with unique name and order
+3. Create `app.py` with self-path resolution + page_config + footer
+4. Put business logic in `src/{module}/`
+5. Copy `src/common/st_utils.py` from any existing plugin
+6. Add `requirements.txt`, `.streamlit/config.toml`, `README.md`
+7. **Do NOT create `src/__init__.py`**
+8. Test standalone: `streamlit run app.py`
+9. Test in Toolkit: clone into `plugins/`, run Toolkit
+10. Push to GitHub — users can install via URL

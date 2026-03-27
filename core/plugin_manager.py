@@ -30,6 +30,10 @@ def install_plugin(url: str) -> tuple:
             [sys.executable, "-m", "pip", "install", "-r", str(req_file), "-q"],
             capture_output=True,
         )
+    # Remove src/__init__.py to enable namespace package (avoid cross-plugin collision)
+    init_file = target / "src" / "__init__.py"
+    if init_file.exists():
+        init_file.unlink()
     _update_registry(repo_name, url, "add")
     return True, f"插件 '{repo_name}' 安装成功"
 

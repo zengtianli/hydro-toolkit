@@ -23,7 +23,7 @@ from src.district.scheduler import DistrictScheduler, DISTRICT_NAME_MAPPING, SLU
 from src.common.st_utils import page_config, footer
 
 # 页面配置
-page_config("浙东河区调度模型")
+page_config("河区调度 - Hydro Toolkit")
 
 # 自定义样式
 st.markdown("""
@@ -56,8 +56,8 @@ st.markdown("""
 
 def main():
     # 标题
-    st.markdown('<p class="main-header">🌊 浙东河区调度模型</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-header">19个河区 · 6个分水枢纽 · 水资源科学调度</p>', unsafe_allow_html=True)
+    st.title("🗺️ 河区调度")
+    st.caption("19个河区 · 6个分水枢纽 · 水资源科学调度")
     
     # 侧边栏
     with st.sidebar:
@@ -316,7 +316,7 @@ def main():
             )
     
     # 页脚
-    footer("浙东河区调度模型 · 为水资源科学调度提供专业计算支持")
+    footer("河区调度 | Hydro Toolkit")
 
 
 if __name__ == "__main__":

@@ -14,16 +14,15 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-st.title("🌊 Hydro Toolkit")
-st.caption("水利计算工具集 | Water Resource Calculation Toolkit")
+st.title("🌊 水利计算工具集 Hydro Toolkit")
+st.caption("面向水利专业人员的在线计算平台")
 
 st.markdown("---")
 
 st.markdown("""
-### What can Hydro Toolkit do?
+### 工具总览
 
-Choose a tool from the **sidebar** to get started. Each tool supports sample data
-for a zero-setup demo experience.
+从 **左侧导航栏** 选择工具开始使用。每个工具均内置示例数据，打开即可体验。
 """)
 
 tools = [
@@ -86,8 +85,8 @@ for i, tool in enumerate(tools):
             <p style="color:gray; font-size:13px;">{tool['name_en']}</p>
             <p>{tool['desc']}</p>
             <p style="font-size:12px;">
-                <b>Input:</b> {tool['input']}<br/>
-                <b>Output:</b> {tool['output']}
+                <b>输入：</b>{tool['input']}<br/>
+                <b>输出：</b>{tool['output']}
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -95,17 +94,17 @@ for i, tool in enumerate(tools):
 st.markdown("---")
 
 st.markdown("""
-### Quick Start
+### 快速开始
 
-1. **Pick a tool** from the left sidebar
-2. **Upload your data** or use the built-in sample data
-3. **Run the calculation** and download the results
+1. 从左侧导航栏 **选择工具**
+2. **上传数据** 或使用内置示例数据
+3. **运行计算** 并下载结果
 
-All tools include sample data for a **zero-setup demo** experience.
+所有工具均内置示例数据，**打开即用，零门槛体验**。
 
 ---
 
 <div style="text-align:center; color:gray; font-size:13px;">
-    Hydro Toolkit | Built for water resource professionals
+    水利计算工具集 Hydro Toolkit | 面向水利专业人员
 </div>
 """, unsafe_allow_html=True)

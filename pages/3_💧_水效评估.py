@@ -10,7 +10,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 from io import BytesIO
 
-from src.common.st_utils import page_config
+from src.common.st_utils import page_config, footer
 from src.efficiency.sample_data import (
     macro_cycle_raw, meso_cycle_raw,
     MICRO_FUNCS, default_ahp_matrix, create_sample_xlsx,
@@ -33,8 +33,8 @@ ALL_INDICATOR_COLS = [
     "C9-工艺水回用率(%)", "C10-再生水利用量增长率(%)",
 ]
 
-page_config("水效评估分析系统", "💧")
-st.title("浙水设计-水效评估分析系统")
+page_config("水效评估 - Hydro Toolkit", "💧")
+st.title("💧 水效评估")
 st.caption("工业集聚区水效评估 | AHP + CRITIC + TOPSIS")
 
 # ── 侧边栏 ──
@@ -650,3 +650,5 @@ with tab4:
         fig_bar.add_vline(x=threshold, line_dash="dash", line_color="gray")
     fig_bar.update_layout(height=350)
     st.plotly_chart(fig_bar, use_container_width=True)
+
+footer("水效评估 | Hydro Toolkit")

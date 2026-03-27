@@ -17,6 +17,15 @@ st.set_page_config(
 st.title("🌊 水利计算工具集 Hydro Toolkit")
 st.caption("面向水利专业人员的在线计算平台")
 
+st.markdown(
+    '<div style="text-align:center;color:gray;font-size:13px;margin-bottom:1rem;">'
+    '⭐ <a href="https://github.com/zengtianli/hydro-toolkit" target="_blank">Star on GitHub</a> · '
+    '👤 <a href="https://github.com/zengtianli" target="_blank">Tianli Zeng</a> · '
+    '📄 <a href="https://dockit.tianlizeng.cloud" target="_blank">DocKit — 文档工具箱</a>'
+    '</div>',
+    unsafe_allow_html=True,
+)
+
 st.markdown("---")
 
 st.markdown("""
@@ -102,9 +111,17 @@ st.markdown("""
 
 所有工具均内置示例数据，**打开即用，零门槛体验**。
 
----
+""")
 
-<div style="text-align:center; color:gray; font-size:13px;">
-    水利计算工具集 Hydro Toolkit | 面向水利专业人员
-</div>
-""", unsafe_allow_html=True)
+st.markdown("---")
+st.markdown(
+    '<div style="text-align:center;color:gray;font-size:13px;">'
+    'Open Source · '
+    '⭐ <a href="https://github.com/zengtianli/hydro-toolkit" target="_blank">Star on GitHub</a> · '
+    'Built by <a href="https://github.com/zengtianli" target="_blank">Tianli Zeng</a>'
+    '<br/>'
+    'More tools: '
+    '📄 <a href="https://dockit.tianlizeng.cloud" target="_blank">DocKit — 文档工具箱</a>'
+    '</div>',
+    unsafe_allow_html=True,
+)

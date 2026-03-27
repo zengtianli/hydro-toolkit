@@ -651,4 +651,4 @@ with tab4:
     fig_bar.update_layout(height=350)
     st.plotly_chart(fig_bar, use_container_width=True)
 
-footer("水效评估 | Hydro Toolkit")
+footer("水效评估")

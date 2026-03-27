@@ -51,10 +51,14 @@ def excel_download(
     )
 
 
-def footer(text: str):
-    """统一页脚样式。"""
+def footer(tool_name: str, repo_url: str = "https://github.com/zengtianli/hydro-toolkit"):
+    """统一页脚样式，含 GitHub 和作者链接。"""
     st.markdown("---")
     st.markdown(
-        f"<div style='text-align:center;color:gray;font-size:14px;'>{text}</div>",
+        f'<div style="text-align:center;color:gray;font-size:13px;">'
+        f'{tool_name} | Hydro Toolkit · '
+        f'<a href="{repo_url}" target="_blank">Star on GitHub</a> · '
+        f'Built by <a href="https://github.com/zengtianli" target="_blank">Tianli Zeng</a>'
+        f'</div>',
         unsafe_allow_html=True,
     )

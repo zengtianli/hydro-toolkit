@@ -316,7 +316,7 @@ def main():
             )
     
     # 页脚
-    footer("河区调度 | Hydro Toolkit")
+    footer("河区调度")
 
 
 if __name__ == "__main__":

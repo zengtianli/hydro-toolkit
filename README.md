@@ -32,7 +32,15 @@ Upload your data, pick a tool, download the result. Zero setup. All tools includ
 
 ## Screenshots
 
-> Coming soon
+### Homepage
+![Homepage](docs/screenshots/homepage.png)
+
+### Tools
+| | |
+|---|---|
+| ![Pollution Capacity](docs/screenshots/capacity.png) | ![Reservoir Scheduling](docs/screenshots/reservoir.png) |
+| ![Water Efficiency](docs/screenshots/efficiency.png) | ![Water Annual Report](docs/screenshots/annual.png) |
+| ![Irrigation Demand](docs/screenshots/irrigation.png) | ![District Scheduling](docs/screenshots/district.png) |
 
 ## Self-host
 

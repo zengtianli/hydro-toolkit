@@ -32,7 +32,15 @@
 
 ## 截图
 
-> 即将添加
+### 首页
+![首页](docs/screenshots/homepage.png)
+
+### 工具界面
+| | |
+|---|---|
+| ![纳污能力计算](docs/screenshots/capacity.png) | ![水库群调度](docs/screenshots/reservoir.png) |
+| ![水效评估](docs/screenshots/efficiency.png) | ![水资源年报](docs/screenshots/annual.png) |
+| ![灌溉需水](docs/screenshots/irrigation.png) | ![河区调度](docs/screenshots/district.png) |
 
 ## 本地部署
 

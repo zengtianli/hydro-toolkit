@@ -23,9 +23,10 @@ Thumbs.db
 # Streamlit
 .streamlit/secrets.toml
 
-# Data - full datasets (keep only samples in repo)
-data/annual/input/
-data/*/output/
+# Plugins (installed via git clone)
+plugins/
+!plugins/.gitkeep
+plugins.json
 
 # Temp
 *.tmp

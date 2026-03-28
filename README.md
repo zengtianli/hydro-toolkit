@@ -31,6 +31,9 @@ Upload your data, pick a tool, download the result. Zero setup. All tools includ
 | **Water Annual Report** | Query Zhejiang province water resource annual data (2019-2024) | Built-in CSV dataset | Excel/CSV export | [Demo](https://hydro-annual.tianlizeng.cloud) |
 | **Irrigation Demand** | Paddy + dryland irrigation water balance simulation | TXT (rainfall + evaporation) | Excel (daily demand) | [Demo](https://hydro-irrigation.tianlizeng.cloud) |
 | **District Scheduling** | Regional water allocation for 19 districts with sluice cascade | TXT (inflow + demand) | TXT/ZIP (balance results) | [Demo](https://hydro-district.tianlizeng.cloud) |
+| **Geocoding** | Batch geocoding/reverse geocoding via Amap API | Excel (coordinates/addresses) | Excel (results) | [Demo](https://hydro-geocode.tianlizeng.cloud) |
+| **Rainfall Runoff** | Lake irrigation demand from rainfall data (6-step pipeline) | TXT (rainfall + runoff) | CSV (hourly demand) | [Demo](https://hydro-rainfall.tianlizeng.cloud) |
+| **Risk Map Data** | Risk map data table auto-filling (GeoJSON → Excel ETL) | GeoJSON + CSV | Excel (18+ sheets) | [Demo](https://hydro-risk.tianlizeng.cloud) |
 
 ## Screenshots
 
@@ -43,6 +46,8 @@ Upload your data, pick a tool, download the result. Zero setup. All tools includ
 | ![Pollution Capacity](docs/screenshots/capacity.png) | ![Reservoir Scheduling](docs/screenshots/reservoir.png) |
 | ![Water Efficiency](docs/screenshots/efficiency.png) | ![Water Annual Report](docs/screenshots/annual.png) |
 | ![Irrigation Demand](docs/screenshots/irrigation.png) | ![District Scheduling](docs/screenshots/district.png) |
+| ![Geocoding](docs/screenshots/geocode.png) | ![Rainfall Runoff](docs/screenshots/rainfall.png) |
+| ![Risk Map Data](docs/screenshots/risk.png) | |
 
 ## Plugin Architecture
 
@@ -68,6 +73,9 @@ The Toolkit is a **host shell** with zero business logic. Each tool is an indepe
 | 📊 Water Annual Report | Zhejiang Province data query (2019–2024) | [hydro-annual](https://github.com/zengtianli/hydro-annual) | [hydro-annual.tianlizeng.cloud](https://hydro-annual.tianlizeng.cloud) |
 | 🌾 Irrigation Demand | Paddy + dryland water balance model | [hydro-irrigation](https://github.com/zengtianli/hydro-irrigation) | [hydro-irrigation.tianlizeng.cloud](https://hydro-irrigation.tianlizeng.cloud) |
 | 🗺️ District Scheduling | 19-district daily supply-demand balance | [hydro-district](https://github.com/zengtianli/hydro-district) | [hydro-district.tianlizeng.cloud](https://hydro-district.tianlizeng.cloud) |
+| 📍 Geocoding | Batch geocoding/reverse geocoding (Amap API) | [hydro-geocode](https://github.com/zengtianli/hydro-geocode) | [hydro-geocode.tianlizeng.cloud](https://hydro-geocode.tianlizeng.cloud) |
+| 🌧️ Rainfall Runoff | Lake irrigation demand from rainfall data | [hydro-rainfall](https://github.com/zengtianli/hydro-rainfall) | [hydro-rainfall.tianlizeng.cloud](https://hydro-rainfall.tianlizeng.cloud) |
+| ⚠️ Risk Map Data | Risk map data table auto-filling ETL | [hydro-risk](https://github.com/zengtianli/hydro-risk) | [hydro-risk.tianlizeng.cloud](https://hydro-risk.tianlizeng.cloud) |
 
 ## Quick Start
 

@@ -4,10 +4,9 @@
 
 Water resource calculation toolkit — reservoir scheduling, pollution capacity, irrigation demand, water efficiency assessment, and more.
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-hydro.tianlizeng.cloud-brightgreen)](https://hydro.tianlizeng.cloud)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.36+-FF4B4B.svg)](https://streamlit.io)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-hydro.tianlizeng.cloud-blue?style=for-the-badge)](https://hydro.tianlizeng.cloud)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9+-yellow?style=for-the-badge)](https://python.org)
 
 ---
 

@@ -4,10 +4,9 @@
 
 水利计算工具集 — 水库调度、纳污能力、灌溉需水、水效评估等一站式计算平台。
 
-[![在线演示](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E6%BC%94%E7%A4%BA-hydro.tianlizeng.cloud-brightgreen)](https://hydro.tianlizeng.cloud)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.36+-FF4B4B.svg)](https://streamlit.io)
+[![在线演示](https://img.shields.io/badge/在线演示-hydro.tianlizeng.cloud-blue?style=for-the-badge)](https://hydro.tianlizeng.cloud)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9+-yellow?style=for-the-badge)](https://python.org)
 
 ---
 

@@ -31,3 +31,12 @@ plugins.json
 # Temp
 *.tmp
 *.bak
+
+
+# Environment
+.env
+
+# Cache
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/

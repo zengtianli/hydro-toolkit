@@ -4,23 +4,26 @@
 
 | 项目 | 路径/值 |
 |------|---------|
-| 入口 | `app.py` (Streamlit Portal) |
+| 入口 | `api.py` (FastAPI，`tlz-api@hydro-toolkit.service` 拉起) |
+| 前端 | `~/Dev/web-stack/apps/hydro-toolkit-web/` (React + @tlz/ui) |
 | 插件目录 | `plugins/` (各 `hydro-xxx/` 子目录) |
 | 插件注册 | `plugins.json` + 每个插件的 `plugin.yaml` |
 | 插件加载 | `core/plugin_loader.py` |
 | 生产 URL | https://hydro.tianlizeng.cloud |
 | 部署路径 | VPS `/var/www/hydro-toolkit/` |
+| API 端口 | 8610（站点端口 8510 + 100） |
 
 ## 常用命令
 
 ```bash
 cd /Users/tianli/Dev/hydro-toolkit
 
-# 启动 Portal
-streamlit run app.py
+# 本地起 FastAPI
+uv run uvicorn api:app --host 127.0.0.1 --port 8610
 
-# 启动单个插件（独立运行）
-streamlit run plugins/hydro-efficiency/app.py
+# 本地烟测（自动起停 + 健康检查 + /api/plugins 验证）
+bash ~/Dev/devtools/scripts/api-smoke.sh hydro-toolkit
+# 或用 slash command：/api-smoke hydro-toolkit
 
 # 添加新插件（git clone 到 plugins/）
 git clone https://github.com/zengtianli/hydro-capacity plugins/hydro-capacity
@@ -29,11 +32,13 @@ git clone https://github.com/zengtianli/hydro-capacity plugins/hydro-capacity
 cat plugins.json
 ```
 
+共享 API helper：`~/Dev/devtools/lib/hydro_api_helpers.py`（4 件套之一，供 api.py 引入）。
+
 ## 项目结构
 
 ```
 hydro-toolkit/
-├── app.py              # Portal 入口，发现并渲染所有插件
+├── api.py              # FastAPI 入口，暴露 /api/plugins 等端点
 ├── plugins.json        # 插件注册列表
 ├── core/
 │   ├── plugin_loader.py   # 读取 plugin.yaml，动态加载插件
@@ -43,7 +48,7 @@ hydro-toolkit/
 └── plugins/
     └── hydro-xxx/      # 每个插件独立 Git 仓库
         ├── plugin.yaml # 插件元数据（name/entry/description）
-        └── app.py      # 插件 Streamlit 入口
+        └── api.py      # 插件 FastAPI 入口
 ```
 
 ## 插件开发规范
@@ -52,7 +57,7 @@ hydro-toolkit/
 
 ```yaml
 name: hydro-xxx
-entry: app.py
+entry: api.py
 description: 工具描述
 ```
 
